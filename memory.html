@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory</title>
+    <style>
+      *{cursor:none;}
+      body
+      {
+        overflow:hidden;
+        background-image:url("gras2.jpg");
+        background-size:cover;
+      }
+     .pos
+     {
+       width:500px;
+       display:block;
+       margin-left:auto;
+       margin-right:auto;
+
+     }
+     #score
+     {
+       border:3px solid black;
+       color:white;
+       text-align:center;
+       background-color:rgba(0,0,0,0.5);
+     }
+     h1
+     {
+        
+     }
+    </style>
+</head>
+<body id="bdy">
+<div id="world" class="pos">
+</div>
+<div id="score" class="pos">
+<h1  id="sc" >Score : 0</h1>
+</div>
+
+</body>
+
+
+<script>
+var world;
+var hole = "hole.gif";
+var mole = "mole.gif";
+var hammer1 = "hammer.png";
+var hammer2 = "hammer2.png";
+var explosion= "explosion.png";
+var hammerobject;
+var cursorX;
+var cursorY;
+var sc;
+var score = 0;
+
+function kill()
+{
+        hammerobject.src= hammer2;
+        var pos =  hammerobject.getBoundingClientRect();
+        hammerobject.style.display= "none";
+        document.elementFromPoint(cursorX,cursorY).click();
+        hammerobject.style.display= "block";
+        setTimeout(function(){hammerobject.src= hammer1;}, 600);
+          
+
+}
+function changescore()
+{
+  sc.innerHTML = "Score : "+ score;
+}
+function mol(val)
+{
+  console.log(val.getAttribute("src"));
+  if (val.getAttribute("src") === mole)
+  { 
+     console.log(val);
+    val.src = explosion;
+    setTimeout(function(){ val.src= hole;}, 600);
+     ++score;
+     changescore();
+  }
+}
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+var prev;
+
+function play()
+{
+  id = getRandomInt(0, 9);
+  if (prev != null)
+  {
+    prev.src = hole;
+  }
+  prev =  document.getElementById(id);
+  prev.src = mole;
+}
+
+  document.addEventListener("DOMContentLoaded", function(event) { 
+    var body = document.getElementById("bdy");
+    body.innerHTML += '<img id="hmmer" onclick="kill()" src="'+ hammer1 +'" style="width:5%;"/>';
+    hammerobject = document.getElementById("hmmer");
+      hammerobject.style.position = "absolute";
+      sc = document.getElementById("sc");
+    document.onmousemove=function(event){
+             
+               cursorX = event.screenX - hammerobject.width /2;
+               cursorY = event.screenY - hammerobject.height /4;
+               hammerobject.style.left = event.clientX - hammerobject.width /2 +'px';
+               hammerobject.style.top = event.clientY - hammerobject.height /4  +'px';
+    };
+     world =  document.getElementById("world");
+    for (var i = 0 ; i < 9; ++i) {
+      world.innerHTML += '<img id="'+i+'"src="'+ hole +'"  onclick="mol(this)" style="width:33%"/>';
+      } 
+
+      setInterval(play, 1000);
+  });
+</script>
+</html>
